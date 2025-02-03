@@ -29,7 +29,7 @@ import com.example.sprint_2.presentation.ui.theme.TextColor
 @Composable
 fun CategoryRow(
     modifier: Modifier,
-    onClick:()-> Unit,
+    onClick:(Category)-> Unit,
     categories: List<Category>
 ) {
     Column(
@@ -61,7 +61,7 @@ fun CategoryRow(
                                 shape = RoundedCornerShape(8.dp)
                             )
                             .clickable {
-                                onClick()
+                                onClick(category)
                             },
                         contentAlignment = Alignment.Center,
                     ) {

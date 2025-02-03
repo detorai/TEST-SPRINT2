@@ -1,6 +1,7 @@
 package com.example.sprint_2.presentation.secondary_screen
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -42,23 +43,29 @@ data class SecondaryScreen(
         val navigator = LocalNavigator.currentOrThrow
         Scaffold(
             topBar = {
-                CommonTopBar(
-                    onBack = {navigator.pop()},
-                    label = state.label,
-                    modifier = Modifier.padding(top = 48.dp),
-                    onFavourite = {
-                        navigator.push(
-                            SecondaryScreen(screen = ScreenType.FAVOURITE)
-                        )
-                    },
-                    screenType = screen
-                )
-                if (screen == ScreenType.CATEGORY) {
-                    CategoryRow(
-                        modifier = Modifier.padding(top = 16.dp),
-                        categories = state.category,
-                        onClick = {}
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    CommonTopBar(
+                        onBack = { navigator.pop() },
+                        label = state.label,
+                        modifier = Modifier.padding(top = 48.dp),
+                        onFavourite = {
+                            viewModel.updateScreen(screen)
+                            navigator.push(
+                                SecondaryScreen(screen = ScreenType.FAVOURITE)
+                            )
+                        },
+                        screenType = screen
                     )
+                    if (screen == ScreenType.CATEGORY) {
+                        CategoryRow(
+                            modifier = Modifier.padding(top = 16.dp),
+                            categories = state.category,
+                            onClick = {}
+                        )
+                    }
                 }
             },
         ) { values ->

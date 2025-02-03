@@ -50,13 +50,15 @@ fun Home(
             modifier = Modifier.padding(top = 22.dp),
             categories = state.category,
             onClick = {
-                navigator.push(SecondaryScreen(screen = ScreenType.CATEGORY))
+                navigator.push(SecondaryScreen(screen = ScreenType.CATEGORY, categoryScreen = it))
             }
         )
         PopularRow(
             modifier = Modifier.padding(top = 24.dp),
             shoesList = viewModel.shoesList,
-            onTextClick = {},
+            onTextClick = {
+                navigator.push(SecondaryScreen(screen = ScreenType.POPULAR))
+            },
             onAdd = {},
             onFavourite = {}
         )
