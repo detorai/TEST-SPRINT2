@@ -3,6 +3,7 @@ package com.example.sprint_2.presentation.secondary_screen
 import androidx.compose.runtime.mutableStateListOf
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.example.sprint_2.data.local_data_source.shoes.AppDatabase
 import com.example.sprint_2.domain.category.Category
 import com.example.sprint_2.domain.category.CategoryUseCase
 import com.example.sprint_2.domain.category.CategoryWithShoes
@@ -10,12 +11,13 @@ import com.example.sprint_2.domain.common.ResponseState
 import com.example.sprint_2.domain.shoes.Shoes
 import com.example.sprint_2.domain.shoes.ShoesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class SecondaryViewModel(type: ScreenType, category: Category? = null): ScreenModel {
+class SecondaryViewModel(type: ScreenType, category: Category? = null, db: AppDatabase): ScreenModel {
     val categoryUseCase = CategoryUseCase()
-    val shoesUseCase = ShoesUseCase()
+    val shoesUseCase = ShoesUseCase(db)
     val shoesList = mutableStateListOf<Shoes>()
     val screenState = MutableStateFlow(CatPopScreenState(currentScreen = type))
 
@@ -34,6 +36,7 @@ class SecondaryViewModel(type: ScreenType, category: Category? = null): ScreenMo
                 screenState.update {
                     it.copy(label = "Избранное", currentScreen = ScreenType.FAVOURITE)
                 }
+                getAllShoes()
             }
         }
         category?.let { category ->
@@ -64,6 +67,7 @@ class SecondaryViewModel(type: ScreenType, category: Category? = null): ScreenMo
                     screenState.update {
                         it.copy(label = "Избранное", currentScreen = ScreenType.FAVOURITE)
                     }
+                    getAllShoes()
                 }
             }
         }
@@ -115,6 +119,21 @@ class SecondaryViewModel(type: ScreenType, category: Category? = null): ScreenMo
                 }
             }
         }
+    }
+    private fun getAllShoes() {
+        screenModelScope.launch {
+            val result = shoesUseCase.getAllShoes()
+            result.collect { response ->
+                when (response) {
+                    is ResponseState.Error -> {}
+                    is ResponseState.Success<*> -> {
+                        shoesList.clear()
+                        shoesList.addAll((response.data as List<Shoes>).filter { it.isFavourite })
+                    }
 
+                    is ResponseState.Loading -> {}
+                }
+            }
+        }
     }
 }

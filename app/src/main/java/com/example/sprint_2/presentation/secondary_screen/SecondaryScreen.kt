@@ -15,32 +15,46 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.model.rememberScreenModel
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.example.sprint_2.data.local_data_source.shoes.AppDatabase
 import com.example.sprint_2.domain.category.Category
 import com.example.sprint_2.presentation.common.CategoryRow
+import com.example.sprint_2.presentation.common.CommonBottomBar
 import com.example.sprint_2.presentation.common.CommonShoesCard
 import com.example.sprint_2.presentation.common.CommonTopBar
+import com.example.sprint_2.presentation.main_screen.bucket.BucketScreen
+
 
 data class SecondaryScreen(
     var screen: ScreenType,
     val categoryScreen: Category? = null,
+    val db: AppDatabase
 ): Screen {
     @Composable
     override fun Content() {
-        val viewModel = rememberScreenModel { SecondaryViewModel(screen, categoryScreen) }
-        Secondary(viewModel)
+        val viewModel = rememberScreenModel { SecondaryViewModel(screen, categoryScreen, db) }
+        LaunchedEffect(screen) {
+            viewModel.updateScreen(screen)
+        }
+        key(screen) {
+            Secondary(viewModel)
+        }
     }
 
     @Composable
     fun Secondary(viewModel: SecondaryViewModel){
         val state = viewModel.screenState.collectAsState().value
         val navigator = LocalNavigator.currentOrThrow
+        val context = LocalContext.current
         Scaffold(
             topBar = {
                 Column(
@@ -54,7 +68,7 @@ data class SecondaryScreen(
                         onFavourite = {
                             viewModel.updateScreen(screen)
                             navigator.push(
-                                SecondaryScreen(screen = ScreenType.FAVOURITE)
+                                SecondaryScreen(screen = ScreenType.FAVOURITE, db = db)
                             )
                         },
                         screenType = screen
@@ -68,6 +82,13 @@ data class SecondaryScreen(
                     }
                 }
             },
+            bottomBar = {
+                if (screen == ScreenType.FAVOURITE)
+                    CommonBottomBar(
+                        onClickFavour = { navigator.push(SecondaryScreen(ScreenType.FAVOURITE, db = db)) },
+                        onClickBucket = {navigator.push(BucketScreen(db))}
+                    )
+            }
         ) { values ->
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),

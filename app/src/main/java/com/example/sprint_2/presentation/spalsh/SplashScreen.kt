@@ -18,12 +18,13 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.sprint_2.R
+import com.example.sprint_2.data.local_data_source.shoes.AppDatabase
 import com.example.sprint_2.presentation.onboard.OnBoardingScreen
 import com.example.sprint_2.presentation.ui.theme.Accent
 import com.example.sprint_2.presentation.ui.theme.Block
 import kotlinx.coroutines.delay
 
-class SplashScreen: Screen {
+data class SplashScreen(private val db: AppDatabase ): Screen {
     @Composable
     override fun Content() {
         Splash()
@@ -33,7 +34,7 @@ class SplashScreen: Screen {
         val navigator = LocalNavigator.currentOrThrow
         LaunchedEffect(Unit){
             delay(1000)
-            navigator.push(OnBoardingScreen())
+            navigator.push(OnBoardingScreen(db))
         }
         Box(
             contentAlignment = Alignment.Center,

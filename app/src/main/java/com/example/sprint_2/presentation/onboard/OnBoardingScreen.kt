@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,15 +48,15 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.example.sprint_2.R
-import com.example.sprint_2.presentation.main_screen.MainScreen
-import com.example.sprint_2.presentation.main_screen.MainScreens
+import com.example.sprint_2.data.local_data_source.shoes.AppDatabase
+import com.example.sprint_2.presentation.main_screen.home.HomeScreen
 import com.example.sprint_2.presentation.ui.theme.Block
 import com.example.sprint_2.presentation.ui.theme.Disable
 import com.example.sprint_2.presentation.ui.theme.SubTextLight
 import com.example.sprint_2.presentation.ui.theme.TextColor
 import kotlinx.coroutines.launch
 
-class OnBoardingScreen: Screen {
+data class OnBoardingScreen(private val db: AppDatabase): Screen {
     @Composable
     override fun Content() {
         OnBoarding()
@@ -65,6 +66,7 @@ class OnBoardingScreen: Screen {
     @Composable
     fun OnBoarding(){
         val navigator = LocalNavigator.currentOrThrow
+        val context = LocalContext.current
 
         val pagerState = rememberPagerState(pageCount = {3})
 
@@ -177,7 +179,7 @@ class OnBoardingScreen: Screen {
                             pagerState.animateScrollToPage(pagerState.currentPage + 1)
                         }
                         if (pagerState.pageCount == pagerState.currentPage+1){
-                            navigator.push(MainScreen(MainScreens.HOME))
+                            navigator.push(HomeScreen(db))
                         }
                     },
                     shape = RoundedCornerShape(13.dp),

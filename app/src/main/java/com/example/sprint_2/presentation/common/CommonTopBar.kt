@@ -1,9 +1,11 @@
 package com.example.sprint_2.presentation.common
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -11,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.sprint_2.R
 import com.example.sprint_2.presentation.secondary_screen.ScreenType
+import com.example.sprint_2.presentation.ui.theme.Background
 import com.example.sprint_2.presentation.ui.theme.TextColor
 
 @Composable
@@ -18,13 +21,12 @@ fun CommonTopBar(
     modifier: Modifier,
     onBack: ()-> Unit,
     label: String,
-    onFavourite: ()-> Unit,
-    screenType: ScreenType
+    onFavourite: ()-> Unit = {},
+    screenType: ScreenType? = null
 ){
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier.fillMaxWidth()

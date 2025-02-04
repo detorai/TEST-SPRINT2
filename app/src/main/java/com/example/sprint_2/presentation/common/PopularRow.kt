@@ -28,8 +28,8 @@ fun PopularRow(
     modifier: Modifier,
     shoesList: List<Shoes>,
     onTextClick: ()-> Unit,
-    onAdd: ()-> Unit,
-    onFavourite: ()-> Unit
+    onAdd: (Shoes)-> Unit,
+    onFavourite: (Shoes)-> Unit
 ){
     val annotatedText = buildAnnotatedString {
         pushStringAnnotation("click", "click")
@@ -79,10 +79,10 @@ fun PopularRow(
                     CommonShoesCard(
                         shoes = shoes,
                         onAdd = {
-                            onAdd()
+                            onAdd(shoes)
                         },
                         onFavourite = {
-                            onFavourite()
+                            onFavourite(shoes)
                         },
                     )
                     if (index < shoesList.size - 1) {

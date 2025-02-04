@@ -24,7 +24,10 @@ import com.example.sprint_2.presentation.ui.theme.Accent
 import com.example.sprint_2.presentation.ui.theme.Block
 
 @Composable
-fun CommonBottomBar(){
+fun CommonBottomBar(
+    onClickFavour:()-> Unit ,
+    onClickBucket:()-> Unit ,
+){
     val navigationList = listOf(R.drawable.home_navigation, R.drawable.heart,R.drawable.bag_splash , R.drawable.notif, R.drawable.profile)
     NavigationBar(
         containerColor = Color.Transparent,
@@ -40,7 +43,7 @@ fun CommonBottomBar(){
             if(index == 2){
                 NavigationBarItem(
                     selected = false,
-                    onClick = {},
+                    onClick = {onClickBucket()},
                     icon = {
                         Box(
                             contentAlignment = Alignment.Center,
@@ -62,6 +65,11 @@ fun CommonBottomBar(){
             NavigationBarItem(
                 selected = false,
                 onClick = {
+                    when (index) {
+                        0 -> {}
+                        1 -> {onClickFavour()}
+                        3 -> {}
+                    }
                 },
                 icon = {
                     Icon(
